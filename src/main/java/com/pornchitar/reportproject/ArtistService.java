@@ -11,11 +11,11 @@ import java.util.List;
  * @author ASUS
  */
 public class ArtistService {
-    public  List<ArtistReport> getArtistByTotalPrice(){
+    public  List<ArtistReport> getTopTenArtistByTotalPrice(){
         ArtistDao artistDao = new ArtistDao();
         return artistDao.getArtistByTotalPrice(10);
     }
-    public  List<ArtistReport> getArtistByTotalPrice(String begin, String end){
+    public  List<ArtistReport> getTopTenArtistByTotalPrice(String begin, String end){
         ArtistDao artistDao = new ArtistDao();
         return artistDao.getArtistByTotalPrice(begin, end, 10);
     }

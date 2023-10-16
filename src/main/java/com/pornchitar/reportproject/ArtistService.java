@@ -15,4 +15,8 @@ public class ArtistService {
         ArtistDao artistDao = new ArtistDao();
         return artistDao.getArtistByTotalPrice(10);
     }
+    public  List<ArtistReport> getArtistByTotalPrice(String begin, String end){
+        ArtistDao artistDao = new ArtistDao();
+        return artistDao.getArtistByTotalPrice(begin, end, 10);
+    }
 }

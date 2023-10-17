@@ -15,6 +15,8 @@ import org.jdatepicker.impl.UtilDateModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 /**
@@ -28,6 +30,9 @@ public class Report1 extends javax.swing.JFrame {
     private AbstractTableModel model;
     private UtilDateModel model1;
     private UtilDateModel model2;
+    private DefaultPieDataset pieDataset;
+    private ChartPanel chartPanel;
+    private DefaultCategoryDataset barDataset;
 
     /**
      * Creates new form Report1
@@ -37,19 +42,55 @@ public class Report1 extends javax.swing.JFrame {
         artistService = new ArtistService();
         artistList = artistService.getTopTenArtistByTotalPrice();
         initTable();
-//        initDatePicker();
-        DefaultPieDataset dataset = new DefaultPieDataset();
-        for(ArtistReport a:artistList){
-            dataset.setValue(a.getName(), a.getTotalPrice());
-        }
-        JFreeChart chart = ChartFactory.createPieChart(
-            "Mobile Sales" , // chart title 
-            dataset, // data 
-            true, // include legend 
-            true, 
-            false);
-        ChartPanel chartPanel = new ChartPanel(chart);
+        initDatePicker();
+        initPieChart();
+        loadPieDataset();
+        initBarChart();
+        loadBarDataset();
+    }
+
+    private void initPieChart() {
+        pieDataset = new DefaultPieDataset();
+        JFreeChart chart = ChartFactory.createPieChart("Artise Sale", // chart title
+                pieDataset, // data
+                true, // include legend
+                true,
+                false);
+        chartPanel = new ChartPanel(chart);
         pnlPieGraph.add(chartPanel);
+    }
+
+    private void loadPieDataset() {
+        pieDataset.clear();
+        for (ArtistReport artistReport : artistList) {
+            pieDataset.setValue(artistReport.getName(), artistReport.getTotalPrice());
+        }
+    }
+    
+    private void initBarChart() {
+        barDataset = new DefaultCategoryDataset();
+        JFreeChart barChart = ChartFactory.createBarChart(
+                "Artist",
+                "Category",
+                "Score",
+                barDataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
+        ChartPanel chartPanel = new ChartPanel(barChart);
+        pnlBarGraph.add(chartPanel);
+    }
+
+    private void loadBarDataset() {
+        barDataset.clear();
+        for (ArtistReport artistReport : artistList) {
+            barDataset.addValue(artistReport.getTotalPrice(), "Income", artistReport.getName());            
+            
+        }
+        for (ArtistReport artistReport : artistList) {
+            barDataset.addValue(artistReport.getTotalQuantity(), "Coppy", artistReport.getName());
+            
+        }
+        
     }
 
     private void initTable() {
@@ -110,6 +151,7 @@ public class Report1 extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblArtist = new javax.swing.JTable();
         pnlPieGraph = new javax.swing.JPanel();
+        pnlBarGraph = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -133,7 +175,7 @@ public class Report1 extends javax.swing.JFrame {
                 .addComponent(pnlDatePicker2, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(95, Short.MAX_VALUE))
+                .addContainerGap(372, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,6 +203,19 @@ public class Report1 extends javax.swing.JFrame {
 
         pnlPieGraph.setBackground(new java.awt.Color(204, 255, 204));
 
+        pnlBarGraph.setBackground(new java.awt.Color(255, 204, 204));
+
+        javax.swing.GroupLayout pnlBarGraphLayout = new javax.swing.GroupLayout(pnlBarGraph);
+        pnlBarGraph.setLayout(pnlBarGraphLayout);
+        pnlBarGraphLayout.setHorizontalGroup(
+            pnlBarGraphLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        pnlBarGraphLayout.setVerticalGroup(
+            pnlBarGraphLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 397, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -169,15 +224,22 @@ public class Report1 extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlPieGraph, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlPieGraph, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
+                    .addComponent(pnlBarGraph, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(pnlPieGraph, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 720, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(pnlPieGraph, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlBarGraph, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -207,6 +269,8 @@ public class Report1 extends javax.swing.JFrame {
         String end = formater.format(model2.getValue());
         artistList = artistService.getTopTenArtistByTotalPrice(begin, end);
         model.fireTableDataChanged();
+        loadPieDataset();
+        loadBarDataset();
     }// GEN-LAST:event_btnProcessActionPerformed
 
     /**
@@ -253,6 +317,7 @@ public class Report1 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel pnlBarGraph;
     private javax.swing.JPanel pnlDatePicker1;
     private javax.swing.JPanel pnlDatePicker2;
     private javax.swing.JPanel pnlPieGraph;
@@ -261,16 +326,17 @@ public class Report1 extends javax.swing.JFrame {
 
     private void initDatePicker() {
         model1 = new UtilDateModel();
-        Properties p = new Properties();
-        p.put("text.today", "Today");
-        p.put("text.month", "Month");
-        p.put("text.year", "Year");
-        JDatePanelImpl datePanel = new JDatePanelImpl(model1, p);
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-        pnlDatePicker1.add(datePicker);
+        Properties p1 = new Properties();
+        p1.put("text.today", "Today");
+        p1.put("text.month", "Month");
+        p1.put("text.year", "Year");
+        JDatePanelImpl datePanel1 = new JDatePanelImpl(model1, p1);
+        JDatePickerImpl datePicker1 = new JDatePickerImpl(datePanel1, new DateLabelFormatter());
+        pnlDatePicker1.add(datePicker1);
 
         model2 = new UtilDateModel();
-        JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p);
+        Properties p2 = new Properties();
+        JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
         JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
         pnlDatePicker2.add(datePicker2);
         model2.setSelected(true);
